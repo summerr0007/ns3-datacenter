@@ -1,2 +1,3 @@
 build/*
 cmake-cache/
+plots_dir/*
