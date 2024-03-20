@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import pylab
 from matplotlib.lines import Line2D
 
-NS3="/home/summer/ns3-datacenter/simulator/ns-3.39"
-plots_dir=NS3+"plots"
+NS3="/home/summer/ns3-datacenter/simulator/ns-3.39/"
+plots_dir=NS3+"plots_dir/"
 results=NS3+"examples/PowerTCP/results_burst/"
 
 # plots_dir="/home/vamsi/Powertcp-NSDI/"
