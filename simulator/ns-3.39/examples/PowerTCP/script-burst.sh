@@ -1,3 +1,4 @@
+#!/bin/bash
 source config.sh
 configFile=$NS3/examples/PowerTCP/config-burst.txt
 RES_DUMP=$NS3/examples/PowerTCP/dump_burst
