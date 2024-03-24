@@ -1,3 +1,5 @@
 build/*
 cmake-cache/
 plots_dir/*
+.pcap
+.cwnd
