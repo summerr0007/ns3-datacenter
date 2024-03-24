@@ -76,3 +76,15 @@ build_example(
     ${libinternet}
     ${libapplications}
 )
+
+
+build_example(
+  NAME Msixth
+  SOURCE_FILES Msixth.cc
+               tutorial-app.cc
+  LIBRARIES_TO_LINK
+    ${libcore}
+    ${libpoint-to-point}
+    ${libinternet}
+    ${libapplications}
+)

@@ -83,8 +83,6 @@ QbbChannel::Attach (Ptr<QbbNetDevice> device)
       m_link[0].m_state = IDLE;
       m_link[1].m_state = IDLE;
     }
-
-
 }
 
 bool
