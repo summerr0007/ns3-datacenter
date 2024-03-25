@@ -119,7 +119,7 @@ main (int argc , char* argv[])
     QbbHelper qbb;
     qbb.SetDeviceAttribute ("DataRate" , StringValue ("5Mbps"));
     qbb.SetChannelAttribute ("Delay" , StringValue ("2ms"));
-    char ipaddr[6][10] = { "10.0.1.1", "10.0.1.2", "10.0.2.1", "10.0.2.2", "10.0.3.1", "10.0.3.2" };
+    char ipaddr[5][10] = { "10.0.1.0", "10.0.2.0", "10.0.3.0", "10.0.4.0", "10.0.5.0" };
 
     InternetStackHelper stack;
     stack.Install (nodes);
@@ -133,7 +133,7 @@ main (int argc , char* argv[])
         {
             NetDeviceContainer devices = qbb.Install (serverNode.Get (i) , switchNode.Get (0));
             Ipv4InterfaceContainer interfaces = address.Assign (devices);
-            BulkSendHelper bulkSendHelper ("ns3::TcpSocketFactory" , InetSocketAddress (Ipv4Address (ipaddr[3]) , sinkPort));
+            BulkSendHelper bulkSendHelper ("ns3::TcpSocketFactory" , InetSocketAddress (Ipv4Address ("10.0.3.1") , sinkPort));
             ApplicationContainer bulkSendApp = bulkSendHelper.Install (serverNode.Get (i));
             bulkSendApp.Start (Seconds (0.));
             bulkSendApp.Stop (Seconds (20.));
@@ -146,9 +146,13 @@ main (int argc , char* argv[])
             sinkApps.Start (Seconds (0.));
             sinkApps.Stop (Seconds (20.));
         }
-
     }
-    
+
+    NetDeviceContainer devices = qbb.Install (switchNode.Get (0) , switchNode.Get (1));
+    Ipv4AddressHelper address;
+    address.SetBase (ipaddr[4] , "255.255.255.0");
+    Ipv4InterfaceContainer interfaces = address.Assign (devices);
+
     PcapHelper pcapHelper;
     Ptr<PcapFileWrapper> file =
         pcapHelper.CreateFile ("Msixth.pcap" , std::ios::out , PcapHelper::DLT_PPP);
