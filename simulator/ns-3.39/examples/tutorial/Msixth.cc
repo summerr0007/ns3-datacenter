@@ -117,7 +117,7 @@ main (int argc , char* argv[])
     }
 
     QbbHelper qbb;
-    qbb.SetDeviceAttribute ("DataRate" , StringValue ("5Mbps"));
+    qbb.SetDeviceAttribute ("DataRate" , StringValue ("10Mbps"));
     qbb.SetChannelAttribute ("Delay" , StringValue ("2ms"));
     char ipaddr[5][10] = { "10.0.1.0", "10.0.2.0", "10.0.3.0", "10.0.4.0", "10.0.5.0" };
 
@@ -148,16 +148,17 @@ main (int argc , char* argv[])
         }
     }
 
-    NetDeviceContainer devices = qbb.Install (switchNode.Get (0) , switchNode.Get (1));
+    QbbHelper qbb2;
+    qbb2.SetDeviceAttribute ("DataRate" , StringValue ("5Mbps"));
+    qbb2.SetChannelAttribute ("Delay" , StringValue ("2ms"));
+
+    NetDeviceContainer devices = qbb2.Install (switchNode.Get (0) , switchNode.Get (1));
     Ipv4AddressHelper address;
     address.SetBase (ipaddr[4] , "255.255.255.0");
     Ipv4InterfaceContainer interfaces = address.Assign (devices);
 
-    PcapHelper pcapHelper;
-    Ptr<PcapFileWrapper> file =
-        pcapHelper.CreateFile ("Msixth.pcap" , std::ios::out , PcapHelper::DLT_PPP);
-    // devices.Get (1)->TraceConnectWithoutContext ("PhyRxDrop" , MakeBoundCallback (&RxDrop , file));
-
+    qbb2.EnablePcapAll ("Msixth.pcap",true);
+    
     Simulator::Stop (Seconds (20));
     Simulator::Run ();
     Simulator::Destroy ();
