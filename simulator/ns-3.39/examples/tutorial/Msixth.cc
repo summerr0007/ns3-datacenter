@@ -156,8 +156,8 @@ main (int argc , char* argv[])
     Ipv4AddressHelper address;
     address.SetBase (ipaddr[4] , "255.255.255.0");
     Ipv4InterfaceContainer interfaces = address.Assign (devices);
-
-    qbb2.EnablePcapAll ("Msixth.pcap",true);
+    
+    qbb2.EnablePcap ("Msixth.pcap" , switchNode, true);
     
     Simulator::Stop (Seconds (20));
     Simulator::Run ();
