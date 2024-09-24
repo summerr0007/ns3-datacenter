@@ -44,7 +44,7 @@ main(int argc, char* argv[])
     bool verbose = true;
     uint32_t nCsma = 3;
     uint32_t nWifi = 3;
-    bool tracing = false;
+    bool tracing = true;
 
     CommandLine cmd(__FILE__);
     cmd.AddValue("nCsma", "Number of \"extra\" CSMA nodes/devices", nCsma);

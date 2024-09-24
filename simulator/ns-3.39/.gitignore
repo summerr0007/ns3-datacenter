@@ -3,3 +3,6 @@ cmake-cache/
 plots_dir/*
 *.pcap
 *.cwnd
+*.run
+*.txt
+*.tar

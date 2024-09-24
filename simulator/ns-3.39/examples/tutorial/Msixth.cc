@@ -94,6 +94,8 @@ RxDrop (Ptr<PcapFileWrapper> file , Ptr<const Packet> p)
 int
 main (int argc , char* argv[])
 {
+    LogComponentEnable ("BulkSendApplication" , LOG_LEVEL_ALL);
+
     CommandLine cmd (__FILE__);
     cmd.Parse (argc , argv);
 
@@ -116,13 +118,16 @@ main (int argc , char* argv[])
         sw->SetNodeType (1); //torNodes
     }
 
-    QbbHelper qbb;
+    // QbbHelper qbb;
+    PointToPointHelper qbb;
     qbb.SetDeviceAttribute ("DataRate" , StringValue ("10Mbps"));
     qbb.SetChannelAttribute ("Delay" , StringValue ("2ms"));
     char ipaddr[5][10] = { "10.0.1.0", "10.0.2.0", "10.0.3.0", "10.0.4.0", "10.0.5.0" };
+    char ipbulk[5][10] = { "10.0.3.1","10.0.4.1" };
 
     InternetStackHelper stack;
     stack.Install (nodes);
+
 
 
     for (uint32_t i = 0;i < 4;i++) {
@@ -133,10 +138,12 @@ main (int argc , char* argv[])
         {
             NetDeviceContainer devices = qbb.Install (serverNode.Get (i) , switchNode.Get (0));
             Ipv4InterfaceContainer interfaces = address.Assign (devices);
-            BulkSendHelper bulkSendHelper ("ns3::TcpSocketFactory" , InetSocketAddress (Ipv4Address ("10.0.3.1") , sinkPort));
-            ApplicationContainer bulkSendApp = bulkSendHelper.Install (serverNode.Get (i));
-            bulkSendApp.Start (Seconds (0.));
-            bulkSendApp.Stop (Seconds (20.));
+            Ptr<Socket> ns3TcpSocket = Socket::CreateSocket (serverNode.Get (i) , TcpSocketFactory::GetTypeId ());
+            Ptr<TutorialApp> app = CreateObject<TutorialApp> ();
+            app->Setup (ns3TcpSocket , InetSocketAddress(ipbulk[0], sinkPort) , 1040 , 1000 , DataRate ("1Mbps"));
+            nodes.Get (0)->AddApplication (app);
+            app->SetStartTime (Seconds (1.));
+            app->SetStopTime (Seconds (20.));
         }
         else {
             NetDeviceContainer devices = qbb.Install (serverNode.Get (i) , switchNode.Get (1));
@@ -148,7 +155,8 @@ main (int argc , char* argv[])
         }
     }
 
-    QbbHelper qbb2;
+    // QbbHelper qbb2;
+    PointToPointHelper qbb2;
     qbb2.SetDeviceAttribute ("DataRate" , StringValue ("5Mbps"));
     qbb2.SetChannelAttribute ("Delay" , StringValue ("2ms"));
 
@@ -156,9 +164,11 @@ main (int argc , char* argv[])
     Ipv4AddressHelper address;
     address.SetBase (ipaddr[4] , "255.255.255.0");
     Ipv4InterfaceContainer interfaces = address.Assign (devices);
-    
-    qbb2.EnablePcap ("Msixth.pcap" , switchNode, true);
-    
+
+    Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
+    qbb2.EnablePcapAll ("Msixth.pcap" , true);
+
     Simulator::Stop (Seconds (20));
     Simulator::Run ();
     Simulator::Destroy ();
